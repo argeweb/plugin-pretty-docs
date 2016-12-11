@@ -30,7 +30,7 @@
                 <li class="record_item"
                     data-key="{{ print_key(item) }}"
                     data-sort="{{ item.sort }}"
-                    data-parent="{% if item.category %}{{ print_key(item.category) }}{% endif %}">{{ item.title }}
+                    data-parent="{% if item.category %}{{ print_key(item.category) }}{% endif %}">{{ print_text(item.title) }}
                     <span style="min-height: 50px;">
                         {% if uri_exists_with_permission(action='edit')%}<a href="{{uri_action_link('delete', item)}}" class="btn btn-flat float-right btn-sm" target="aside_iframe"><i class="fa fa-shield"></i> 刪除 </a>{% endif %}
                         {% if uri_exists_with_permission(action='edit')%}<a href="{{uri_action_link('edit', item)}}" class="btn btn-flat float-right btn-sm" target="aside_iframe"><i class="fa fa-shield"></i> 編輯 </a>{% endif %}
