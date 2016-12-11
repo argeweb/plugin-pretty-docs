@@ -8,6 +8,7 @@
 
 from google.appengine.ext import ndb
 from google.appengine.datastore.datastore_query import Cursor
+from argeweb import auth, add_authorizations
 from argeweb import Controller, scaffold, route_menu, Fields, route_with, route
 from argeweb.components.pagination import Pagination
 from argeweb.components.search import Search
@@ -27,17 +28,38 @@ class PrettyDocs(Controller):
         hidden_properties_in_edit = []
         excluded_properties_in_from = ()
 
+    @add_authorizations(auth.check_user)
     @route_with(template='/docs/<:(.*)>')
     def doc_path(self, path):
         self.context["config"], self.context["page"], self.context["list"], self.meta.view.template_name = \
             get_page(self.namespace, path)
         self.meta.view.theme = self.context["config"].theme
+        if self.application_user and self.application_user_level >= 999:
+            self.context["editable"] = "editable"
 
     @route_menu(list_name=u"backend", text=u"說明文件", sort=331, group=u"內容管理", need_hr=True)
     def admin_list(self):
         self.context["config"] = PrettyDocsConfigModel.find_or_create_by_name(self.namespace)
         self.check_field_config(self.context["config"], self.Scaffold)
         return scaffold.list(self)
+
+    @route
+    def admin_update(self):
+        self.meta.change_view("json")
+        item = self.params.get_ndb_record("item")
+        field = self.params.get_string("field")
+        content = self.params.get_string("content")
+        if item is None:
+            self.context["data"] = {
+                "info": "none"
+            }
+            return
+        if hasattr(item, field):
+            setattr(item, field, content)
+            item.put()
+        self.context["data"] = {
+            "info": "save"
+        }
 
     @route
     def admin_add(self):

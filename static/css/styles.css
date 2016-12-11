@@ -458,8 +458,9 @@ select {
   margin-top: 0;
   margin-bottom: 0;
   font-weight: bold;
-  padding-bottom: 10px;
+  padding-bottom: 6px;
   border-bottom: 1px solid #d7d7d7;
+  line-height: 1.4;
 }
 .doc-section h1 {
   font-size: 24px;
@@ -490,6 +491,7 @@ select {
   padding-bottom: 15px;
 }
 .section-block .block-title {
+  line-height: 1.4;
   margin-top: 0;
 }
 .section-block .list > li {
@@ -1261,6 +1263,9 @@ select {
   .cards-section .item-inner {
     padding: 30px 15px;
   }
+}
+.doc-title span.title- p,.doc-title span.title-editable p{
+  display: inline-block;
 }
 /* Small devices (tablets, 768px and up) */
 /* Medium devices (desktops, 992px and up) */
