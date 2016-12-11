@@ -1,0 +1,304 @@
+{% import "backend/macros.html" as s with context %}
+{% import 'backend/form_macros.html' as f with context %}
+{% extends s.layout() %}
+{% block header %}{% endblock %}
+{% block layout_content %}
+<div class="ibox-content m-b-sm border-bottom">
+    <div class="p-xs">
+        <div class="pull-left m-r-md">
+            <i class="fa fa-user text-navy mid-icon"></i>
+        </div>
+        <h2>說明文件</h2>
+        <span>透過拖曳來變更分類的順序與其所屬的分類
+            {%- if uri_exists_with_permission(prefix="admin", controller="pretty_docs_config", action="config") %}，<a href="{{ uri('admin:pretty_docs_config:config') }}">項目設定</a>{% endif -%}。</span>
+        {% if last_record_date %}<span class="text-muted small pull-right visible-sm visible-md visible-lg">最後更新：<i class="fa fa-clock-o"></i> {{ print_value(last_record_date) }}</span>{% endif %}
+    </div>
+</div>
+<script src="/static/vendor/jquery-sortable-lists/jquery-sortable-lists.min.js"></script>
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-sm-7">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <h4>文件列表</h4>
+                    <ul class="sTree2 listsClass" id="sTree2"></ul>
+                </div>
+            </div>
+            {%- set list = context[scaffolding.plural] -%}
+            <ul id="pretty_docs_list" style="display: none;">
+                {% for item in list %}
+                <li class="record_item"
+                    data-key="{{ print_key(item) }}"
+                    data-sort="{{ item.sort }}"
+                    data-parent="{% if item.category %}{{ print_key(item.category) }}{% endif %}">{{ item.title }}
+                    <span style="min-height: 50px;">
+                        {% if uri_exists_with_permission(action='edit')%}<a href="{{uri_action_link('delete', item)}}" class="btn btn-flat float-right btn-sm" target="aside_iframe"><i class="fa fa-shield"></i> 刪除 </a>{% endif %}
+                        {% if uri_exists_with_permission(action='edit')%}<a href="{{uri_action_link('edit', item)}}" class="btn btn-flat float-right btn-sm" target="aside_iframe"><i class="fa fa-shield"></i> 編輯 </a>{% endif %}
+                        {% if uri_exists_with_permission(action='edit')%}<a href="{{uri_action_link('view', item)}}" class="btn btn-flat float-right btn-sm" target="aside_iframe"><i class="fa fa-shield"></i> 檢視 </a>{% endif %}
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-sm-5">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <h4>受影響的項目</h4>
+                    <p class="text-muted">
+                        受到影響，需要進行變更的項目如下，這可能需要花費一些時間，由其是在子項目較深，產品數量較多時。
+                    </p>
+
+                    <div class="text-right">
+                        <button type="button" class="btn btn-sm btn-primary m-t-n-xs update-button"><strong>進行變更</strong></button>
+                    </div>
+                </div>
+                <div class="ibox-content update-list">
+                    <h6>需更新的項目</h6>
+                    <ul class="todo-list small-list ui-sortable" id="sendInfo">
+                        <li>需要更新文件層級 <span id="sendP1">0 / 0</span> 個項目</li>
+                        <li>需要更新文件位置 <span id="sendP2">0 / 0</span> 個項目</li>
+                    </ul>
+                    <h6 style="display: none;" class="detail">詳細情形</h6>
+                    <ul class="todo-list m-t small-list ui-sortable" id="list1"></ul>
+                    <ul class="todo-list small-list ui-sortable" id="list2"></ul>
+                    <ul class="todo-list small-list ui-sortable" id="list3"></ul>
+                    <ul class="todo-list small-list ui-sortable" id="list4"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript">
+    page.maxLevel = parseInt('{{ config.category_depth }}');
+    page.initList = [];
+    page.treeId = "#sTree2";
+    page.countParentLevel = function(target){
+        // 計算父項目層級 (包含自已)
+        var d = 0, i = 0;
+        target.parents().each(function(){
+            if ("#" + $(this).attr("id") == page.treeId) d = i+1;
+            i++;
+        });
+        return (d > 1) ? (d - 1) / 2 + 2 : d + 1;
+    };
+    page.countChildrenLevel = function(target){
+        // 計算子項目層級
+        var d = 0, i = 1;
+        for (;i<=10;i++){
+            if (target.find(" ul li".repeat(i)).length >= 1) d = i;
+        }
+        return d;
+    };
+    page.insertCategory = function(category_id, category_name, category_sort, parent_category_id){
+        var insert_item = '<li id="' + category_id +'" data-sort="' + category_sort + '"><div>'  + category_name + '</div></li>';
+        if (typeof parent_category_id === "undefined" || parent_category_id == ""){
+            $(page.treeId +">li").each(function(){
+                if (category_sort > parseFloat($(this).data("sort"))){
+                    $(insert_item).insertBefore($(this));
+                    insert_item = "";
+                }
+            });
+            if (insert_item != ""){
+                $(page.treeId).append(insert_item);
+            }
+        }else{
+            var pid = "#" + parent_category_id;
+            var p = page.countParentLevel($(pid));
+            if (page.maxLevel >= p ){
+                if ($(pid +">ul").length == 0){
+                    $(pid).append("<ul></ul>");
+                }
+                $("#" + parent_category_id +">ul>li").each(function(){
+                    if (category_sort > parseFloat($(this).data("sort"))){
+                        $(insert_item).insertBefore($(this));
+                        insert_item = "";
+                    }
+                });
+                if (insert_item != ""){
+                    $("#" + parent_category_id +">ul").append(insert_item);
+                }
+            }else{
+                console.log("error maxLeve <  " + p.toString());
+            }
+        }
+        return $(page.treeId + " li#"+category_id).length > 0;
+    };
+    page.compareItem = function(item1, item2){
+        var rv = 0;
+        if (item1["parentId"] != item2["parentId"]) rv=1;
+        if (item1["order"] != item2["order"]) rv+=2;
+        return rv;
+    };
+    page.getChangeList = function(currentList){
+        var lastItemList = [], changeList = [], subCategoryIdList = [];
+        $.map(currentList, function(item1){
+            item1["level"] = page.countParentLevel($("#" + item1["id"]));
+            item1["depth"] = page.countChildrenLevel($("#" + item1["id"]));
+            var level_index = item1["level"] - 2;
+            $.map(page.initList, function(item2){
+                item1["order_before"] = undefined;
+                if (item1["id"] == item2["id"]){
+                    item1["compare"] = page.compareItem(item1, item2);
+                    if (item1["compare"] >=2){
+                        if (item1["order"] > 0){
+                            if (typeof lastItemList[level_index] !== "undefined"){
+                                item1["order_after"] = lastItemList[level_index]["id"];
+                                lastItemList[level_index]["order_before"] = item1["id"];
+                            }
+                        }else{
+                            item1["order_after"] = "now";
+                        }
+                    }
+                    if (item1["compare"] > 0){
+                        changeList.push(item1);
+                    }
+                    if (item1["compare"] == 1 || item1["compare"] == 3) {
+                        $('#' + item1["id"]).find("ul li").each(function(){
+                            subCategoryIdList.push({"target": $(this).attr("id"), "parent": $(this).attr("id")});
+                        });
+                    }
+                }
+            });
+            if (typeof lastItemList[level_index] === "undefined"){
+                lastItemList.push(item1);
+            }else{
+                lastItemList[level_index] = item1;
+            }
+        });
+        return [changeList, $.unique(subCategoryIdList)];
+    };
+    page.changeCheckBox = function(index){
+        $(".m-l-xs .material-icons").eq(index).text("check_box");
+    };
+    page.saveChangeList = function(){
+        $(".update-button").prop("disabled", true);
+        var i = 0, is_move = false, is_sort = false;
+        var updateTarget = null, item = null;
+        if (typeof page.mustChangeParentList !== "undefined"){
+            for (;i<page.mustChangeParentList.length;i++){
+                item = page.mustChangeParentList[i];
+                if (typeof item["update"] === "undefined"){
+                    updateTarget = item;
+                    is_move = true;
+                    break;
+                }
+            }
+        }
+        if (updateTarget == null && typeof page.mustChangePositionList !== "undefined"){
+            for (i=0;i<page.mustChangePositionList.length;i++){
+                item = page.mustChangePositionList[i];
+                if (typeof item["update"] === "undefined"){
+                    updateTarget = item;
+                    is_sort = true;
+                    break;
+                }
+            }
+        }
+        if (updateTarget != null){
+            var path = is_move ? "change_parent" : "change_sort";
+            var sendP = is_move ? "#sendP1" : "#sendP2";
+            var length = is_move ? page.mustChangeParentList.length : page.mustChangePositionList.length;
+            json("/admin/pretty_docs/" + path, updateTarget, function(data){
+                updateTarget["update"] = Date.now();
+                $(sendP).text((i+1) + " / " + length);
+                setTimeout(page.saveChangeList, 80);
+            })
+        }else{
+            page.initList = $(page.treeId).sortableListsToArray();
+            page.compare();
+            $(".update-button").prop("disabled", false);
+            backend.message.quick_show("更新完成", 1800);
+        }
+    };
+    page.compare = function(){
+        var currentList = $(page.treeId).sortableListsToArray(), cl = page.getChangeList(currentList);
+        var changeList = cl[0], subCategoryIdList = cl[1];
+        page.mustChangeParentList = [];
+        page.mustChangePositionList = [];
+        $("#list1, #list2, #list3, #list4").html("");
+        $.map(changeList, function(item){
+            var order = "", pos = "", id = item["id"], pid = item["parentId"], compare = item["compare"];
+            if (compare > 1){
+                order = ", 排在" + $('*[data-key="' + item["order_after"] + '"]').text() + "後";
+                if (item["order"] == 0){ order = ", 排在該分類的最上方"}
+                page.mustChangePositionList.push({"target": id, "sort": item["order_after"], "sort_before": item["order_before"]});
+            }
+            if (compare == 1 || compare == 3) {
+                pos = ", 移動到" + ((typeof pid === "undefined") ? "根目錄" : $('*[data-key="' + pid + '"]').text()) + "下";
+                page.mustChangeParentList.push({"target": id, "parent": pid});
+            }
+            $("#list"+compare).append(
+                '<li><span class="m-l-xs">' + $('*[data-key="' + id + '"]').text() + pos + order + '</span></li>'
+            );
+        });
+        $.map(subCategoryIdList, function(item){
+            $("#list4").append(
+                '<li><span class="m-l-xs">' + $('*[data-key="' + item["target"] + '"]').text() + ' 需要重整父類別 </span></li>'
+            );
+            page.mustChangeParentList.push(item);
+        });
+        $("#sendP1").text("0 / " + page.mustChangeParentList.length);
+        $("#sendP2").text("0 / " + page.mustChangePositionList.length);
+        $(".update-list h6.detail").toggle(($(".update-list li").length > $("#sendInfo li").length));
+    };
+    page.init = function(){
+        var next_list = [];
+        $("#pretty_docs_list li").each(function(){
+            next_list.push({"key": $(this).data("key"), "text": $(this).html(), "sort": parseFloat($(this).data("sort")), "parent": $(this).data("parent")});
+        });
+        for (var i=0;i<5;i++){
+            var next_list_temp = [];
+            for (var j = 0, l = next_list.length; j < l; j++ ) {
+                var item = next_list[j];
+                if (page.insertCategory(item["key"], item["text"], item["sort"], item["parent"]) == false){
+                    next_list_temp.push(item);
+                }
+            }
+            next_list = next_list_temp;
+            n = next_list.length;
+        }
+        var options = {
+            placeholderCss: {'background-color': '#ff8'},
+            hintCss: {'background-color': '#bbf'},
+            onChange: function (cEl) {
+            },
+            complete: function (cEl) {
+                page.compare();
+            },
+            isAllowed: function (cEl, hint, target) {
+                if (page.countParentLevel(target) + page.countChildrenLevel(cEl) > page.maxLevel) {
+                    hint.css('background-color', '#ed5565');
+                    return false;
+                }
+                hint.css('background-color', '#1ab394');
+                return true;
+            },
+            opener: {
+                active: true,
+                as: 'html',
+                close: '<i class="material-icons">expand_more</i>',
+                open: '<i class="material-icons">chevron_right</i>'
+            },
+            ignoreClass: 'btn'
+        };
+    	$(page.treeId).sortableLists(options);
+        $(".sortableListsOpener").mousedown();
+        $(".update-button").click(page.saveChangeList);
+        page.initList = $(page.treeId).sortableListsToArray();
+    };
+    page.init();
+</script>
+</div>
+{% endblock %}
+
+{% block float_buttons %}
+    {%- if scaffolding %}
+        {% if uri_exists_with_permission(action="add") -%}
+            <div class="fbtn-container">
+                <div class="fbtn-inner">
+                    <a href="{{uri_action_link('add') }}" class="fbtn fbtn-lg fbtn-brand-accent waves-attach waves-circle waves-light" target="aside_iframe"><span class="fbtn-text fbtn-text-left">{{ s.scaffold_title("add") }}</span><span class="icon icon-lg">edit</span></a>
+                </div>
+            </div>
+        {%- endif -%}
+    {%- endif %}
+{% endblock %}

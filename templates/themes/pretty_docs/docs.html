@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="zhtw" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="zhtw" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="zhtw"> <!--<![endif]-->
+<head>
+    <title>{{ config.title }} Docs</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">    
+    <link rel="shortcut icon" href="/plugins/pretty_docs/static/favicon.ico">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/static/vendor/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/vendor/font-awesome/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/vendor/prism/prism.css">
+    <link rel="stylesheet" href="/plugins/pretty_docs/static/plugins/elegant_font/css/style.css">
+    <link id="theme-style" rel="stylesheet" href="/plugins/pretty_docs/static/css/styles.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+</head>
+
+<body class="body-{{ page.page_color }}">
+    <div class="page-wrapper">
+        <header id="header" class="header">
+            <div class="container">
+                <div class="branding">
+                    <h1 class="logo">
+                        <a href="/docs/index">
+                            <span aria-hidden="true" class="icon_documents_alt icon"></span>
+                            <span class="text-highlight">{{ config.title }}</span><span class="text-bold">Docs</span>
+                        </a>
+                    </h1>
+                </div><!--//branding-->
+                <ol class="breadcrumb">
+                    <li><a href="/docs/index">Docs</a></li>
+                    <li class="active">{{ page.title }}</li>
+                </ol>
+            </div><!--//container-->
+        </header><!--//header-->
+        <div class="doc-wrapper">
+            <div class="container">
+                <div id="doc-header" class="doc-header text-center">
+                    <h1 class="doc-title"><i class="icon fa {{ page.icon }}"></i> {{ page.title }}</h1>
+                    <div class="meta"><i class="fa fa-clock-o"></i> Last updated: {{ page.modified_time }}</div>
+                </div><!--//doc-header-->
+                <div class="doc-body">
+                    <div class="doc-content">
+                        <div class="content-inner">
+                            {% if page.content -%}
+                            <section id="{{ page.name }}" class="doc-section">
+                                <div class="section-block">{{ page.content }}</div>
+                            </section>
+                            {%- endif %}
+                            {% for item in list %}
+                            <section id="section-{{ item.name }}" class="doc-section">
+                                <h2 class="section-title">{{ item.title }}</h2>
+                                {% if item.content %}<div class="section-block">{{ item.content }}</div>{% endif %}
+                                {% for child in item.children -%}
+                                <div id="section-block-{{ child.name }}"  class="section-block">
+                                    <h3 class="block-title">{{ child.title }}</h3>
+                                    {% if child.content %}{{ child.content }}{% endif %}
+                                </div>{% endfor %}
+                            </section>
+                            {% endfor %}
+                        </div>
+                    </div><!--//doc-content-->
+                    <div class="doc-sidebar hidden-xs">
+                        <nav id="doc-nav">
+                            <ul id="doc-menu" class="nav doc-menu" data-spy="affix">
+                            {% for item in list %}
+                                <li><a class="scrollto" href="#section-{{ item.name }}">{{ item.title }}</a></li>
+                                <ul class="nav doc-sub-menu">
+                                    {% for child in item.children -%}<li><a class="scrollto" href="#section-block-{{ child.name }}">{{ child.title }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            {% endfor %}
+                            </ul><!--//doc-menu-->
+                        </nav>
+                    </div><!--//doc-sidebar-->
+                </div><!--//doc-body-->              
+            </div><!--//container-->
+        </div><!--//doc-wrapper-->
+
+        {% if page.footer_content -%}
+        <div id="promo-block" class="promo-block">
+            <div class="container"><div class="promo-block-inner">{{ page.footer_content }}</div></div>
+        </div>
+        {%- endif %}
+    </div><!--//page-wrapper-->
+
+    <footer class="footer text-center">
+        <div class="container">
+            {% if config.footer_content -%}{{ config.footer_content }}{%- endif %}
+        </div>
+    </footer>
+    <script type="text/javascript" src="/static/vendor/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/vendor/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/vendor/prism/prism.js"></script>
+    <script type="text/javascript" src="/plugins/pretty_docs/static/plugins/jquery-scrollTo/jquery.scrollTo.min.js"></script>
+    <script type="text/javascript" src="/plugins/pretty_docs/static/plugins/jquery-match-height/jquery.matchHeight-min.js"></script>
+    <script type="text/javascript" src="/plugins/pretty_docs/static/js/main.js"></script>
+</body>
+</html>
