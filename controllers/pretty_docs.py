@@ -44,24 +44,6 @@ class PrettyDocs(Controller):
         return scaffold.list(self)
 
     @route
-    def admin_update(self):
-        self.meta.change_view("json")
-        item = self.params.get_ndb_record("item")
-        field = self.params.get_string("field")
-        content = self.params.get_string("content")
-        if item is None:
-            self.context["data"] = {
-                "info": "none"
-            }
-            return
-        if hasattr(item, field):
-            setattr(item, field, content)
-            item.put()
-        self.context["data"] = {
-            "info": "save"
-        }
-
-    @route
     def admin_add(self):
         self.context["config"] = PrettyDocsConfigModel.find_or_create_by_name(self.namespace)
         self.check_field_config(self.context["config"], self.Scaffold)

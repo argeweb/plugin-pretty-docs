@@ -127,7 +127,7 @@
                 "field": $(this).data("field"),
                 "content": $(this).html()
             };
-            json_async("/admin/pretty_docs/update", data, function(data){
+            json_async("/admin/record/update", data, function(data){
                 console.log(data);
             }, function(data){
                 console.log(data);
