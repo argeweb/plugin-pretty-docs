@@ -1267,6 +1267,17 @@ select {
 .doc-title span.title- p,.doc-title span.title-editable p{
   display: inline-block;
 }
+.btn-editor{
+    position: fixed;
+    top: 0;
+    right: 8px;
+    background: #efefef;
+    padding: 3px 11px;
+    border-left: solid 2px #999;
+    border-right: solid 2px #999;
+    border-bottom: solid 2px #aaa;
+    box-shadow: 1px 1px 8px #666;
+}
 /* Small devices (tablets, 768px and up) */
 /* Medium devices (desktops, 992px and up) */
 /* Large devices (large desktops, 1200px and up) */

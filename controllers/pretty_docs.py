@@ -35,6 +35,7 @@ class PrettyDocs(Controller):
         self.context["config"], self.context["page"], self.context["list"], self.meta.view.template_name = \
             get_page(self.namespace, path)
         self.meta.view.theme = self.context["config"].theme
+        self.context["path"] = u"/docs/" + path
         if self.application_user and self.application_user_level >= 999:
             self.context["editable"] = self.params.get_boolean("edit")
 
