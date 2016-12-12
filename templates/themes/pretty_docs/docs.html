@@ -10,11 +10,11 @@
     <meta name="description" content="">
     <meta name="author" content="">    
     <link rel="shortcut icon" href="/plugins/pretty_docs/static/favicon.ico">
-    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/medium-editor/latest/css/medium-editor.min.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800">
     <link rel="stylesheet" href="/static/vendor/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/vendor/font-awesome/font-awesome.min.css">
-    <link rel="stylesheet" href="/static/vendor/prism/prism.css">
+    <link rel="stylesheet" href="/static/vendor/font-awesome/font-awesome.min.css">{% if editable -%}
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/medium-editor/latest/css/medium-editor.min.css" type="text/css" media="screen" charset="utf-8">{%- else -%}
+    <link rel="stylesheet" href="/static/vendor/prism/prism.css">{% endif %}
     <link id="theme-style" rel="stylesheet" href="/plugins/pretty_docs/static/css/styles.css?r=0.2">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -45,7 +45,7 @@
         <div class="doc-wrapper">
             <div class="container">
                 <div id="doc-header" class="doc-header text-center">
-                    <h1 class="doc-title"><i class="icon fa {{ page.icon }}"></i> <span class="title-{{ editable }}" data-key="{{ print_key(page) }}" data-field="title">{{ page.title }}</span></h1>
+                    <h1 class="doc-title"><i class="icon fa {{ page.icon }}"></i> <span class="title-editable" data-key="{{ print_key(page) }}" data-field="title">{{ page.title }}</span></h1>
                     <div class="meta"><i class="fa fa-clock-o"></i> Last updated: {{ page.modified_time }}</div>
                 </div><!--//doc-header-->
                 <div class="doc-body">
@@ -53,17 +53,17 @@
                         <div class="content-inner">
                             {% if page.content -%}
                             <section id="{{ page.name }}" class="doc-section">
-                                <div class="section-block content-{{ editable }}" data-key="{{ print_key(page) }}" data-field="content">{{ page.content }}</div>
+                                <div class="section-block content-editable" data-key="{{ print_key(page) }}" data-field="content">{{ page.content }}</div>
                             </section>
                             {%- endif %}
                             {% for item in list %}
                             <section id="section-{{ item.name }}" class="doc-section">
-                                <h2 class="section-title title-{{ editable }}" data-key="{{ print_key(item) }}" data-field="title">{{ item.title }}</h2>
-                                {% if item.content %}<div data-key="{{ print_key(item) }}" data-field="content" class="section-block content-{{ editable }}">{{ item.content }}</div>{% endif %}
+                                <h2 class="section-title title-editable" data-key="{{ print_key(item) }}" data-field="title">{{ item.title }}</h2>
+                                {% if item.content %}<div data-key="{{ print_key(item) }}" data-field="content" class="section-block content-editable">{{ item.content }}</div>{% endif %}
                                 {% for child in item.children -%}
                                 <div id="section-block-{{ child.name }}"  class="section-block">
-                                    <h3 class="block-title title-{{ editable }}" data-key="{{ print_key(child) }}" data-field="title">{{ child.title }}</h3>
-                                    {% if child.content %}<div data-key="{{ print_key(child) }}" data-field="content" class="content-{{ editable }}">{{ child.content }}</div>{% endif %}
+                                    <h3 class="block-title title-editable" data-key="{{ print_key(child) }}" data-field="title">{{ child.title }}</h3>
+                                    {% if child.content %}<div data-key="{{ print_key(child) }}" data-field="content" class="content-editable">{{ child.content }}</div>{% endif %}
                                 </div>{% endfor %}
                             </section>
                             {% endfor %}
@@ -99,12 +99,13 @@
         </div>
     </footer>
     <script type="text/javascript" src="/static/vendor/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdn.jsdelivr.net/medium-editor/latest/js/medium-editor.min.js"></script>
-    <script type="text/javascript" src="/static/vendor/bootstrap/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/static/vendor/prism/prism.js"></script>
+    <script type="text/javascript" src="/static/vendor/bootstrap/bootstrap.min.js"></script>{% if editable -%}
+    <script type="text/javascript" src="//cdn.jsdelivr.net/medium-editor/latest/js/medium-editor.min.js"></script>{%- else -%}
+    <script type="text/javascript" src="/static/vendor/prism/prism.js"></script>{% endif %}
     <script type="text/javascript" src="/plugins/pretty_docs/static/plugins/jquery-scrollTo/jquery.scrollTo.min.js"></script>
     <script type="text/javascript" src="/plugins/pretty_docs/static/plugins/jquery-match-height/jquery.matchHeight-min.js"></script>
     <script type="text/javascript" src="/plugins/pretty_docs/static/js/main.js"></script>
+    {% if editable -%}
     <script>
         function json_async(url,data,successCallback,errorCallback){$.ajax({url:url,type:"POST",cache: false,dataType:"json",data:data,async:1,success:function(a){successCallback(a)},error:function(b,c,d){void 0==errorCallback?show_message(d.message):errorCallback(d.message)}})}
         var editor = new MediumEditor('.content-editable', {
@@ -134,5 +135,6 @@
             });
         });
     </script>
+    {%- endif %} 
 </body>
 </html>

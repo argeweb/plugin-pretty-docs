@@ -29,13 +29,14 @@ class PrettyDocs(Controller):
         excluded_properties_in_from = ()
 
     @add_authorizations(auth.check_user)
-    @route_with(template='/docs/<:(.*)>')
+    @route_with(template="/docs/<:(.*)>")
+    @route_with(template="/docs/<:(.*)>.html")
     def doc_path(self, path):
         self.context["config"], self.context["page"], self.context["list"], self.meta.view.template_name = \
             get_page(self.namespace, path)
         self.meta.view.theme = self.context["config"].theme
         if self.application_user and self.application_user_level >= 999:
-            self.context["editable"] = "editable"
+            self.context["editable"] = self.params.get_boolean("edit")
 
     @route_menu(list_name=u"backend", text=u"說明文件", sort=331, group=u"內容管理", need_hr=True)
     def admin_list(self):
