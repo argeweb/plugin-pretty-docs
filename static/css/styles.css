@@ -1269,14 +1269,12 @@ select {
 }
 .btn-editor{
     position: fixed;
-    top: 0;
+    top: 8px;
     right: 8px;
     background: #efefef;
     padding: 3px 11px;
-    border-left: solid 2px #999;
-    border-right: solid 2px #999;
-    border-bottom: solid 2px #aaa;
-    box-shadow: 1px 1px 8px #666;
+    border: solid 2px #333;
+    box-shadow: 0 0 8px #666;
 }
 /* Small devices (tablets, 768px and up) */
 /* Medium devices (desktops, 992px and up) */

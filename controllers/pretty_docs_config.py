@@ -17,8 +17,8 @@ class PrettyDocsConfig(Controller):
         pagination_limit = 10
 
     class Scaffold:
-        display_properties_in_list = ("title", "is_enable", "category")
-        hidden_properties_in_edit = ("name",)
+        display_properties_in_list = ('title', 'is_enable', 'category')
+        hidden_properties_in_edit = ('name',)
 
     @route
     def admin_config(self):

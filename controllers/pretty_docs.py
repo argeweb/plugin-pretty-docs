@@ -24,7 +24,7 @@ class PrettyDocs(Controller):
         pagination_limit = 1000
 
     class Scaffold:
-        display_properties_in_list = ["name", "title", "title_lang_zhtw", "is_enable", "category"]
+        display_properties_in_list = ['name', 'title', 'title_lang_zhtw', 'is_enable', 'category']
         hidden_properties_in_edit = []
         excluded_properties_in_from = ()
 
@@ -32,44 +32,44 @@ class PrettyDocs(Controller):
     @route_with(template="/docs/<:(.*)>")
     @route_with(template="/docs/<:(.*)>.html")
     def doc_path(self, path):
-        self.context["config"], self.context["page"], self.context["list"], self.meta.view.template_name = \
+        self.context['config'], self.context['page'], self.context['list'], self.meta.view.template_name = \
             get_page(self.namespace, path)
-        self.meta.view.theme = self.context["config"].theme
-        self.context["path"] = u"/docs/" + path
+        self.meta.view.theme = self.context['config'].theme
+        self.context['path'] = u'/docs/' + path
         if self.application_user and self.application_user_level >= 999:
-            self.context["editable"] = self.params.get_boolean("edit")
+            self.context['editable'] = self.params.get_boolean('edit')
 
-    @route_menu(list_name=u"backend", text=u"說明文件", sort=331, group=u"內容管理", need_hr=True)
+    @route_menu(list_name=u'backend', text=u'說明文件', sort=331, group=u'內容管理', need_hr=True)
     def admin_list(self):
-        self.context["config"] = PrettyDocsConfigModel.find_or_create_by_name(self.namespace)
-        self.check_field_config(self.context["config"], self.Scaffold)
+        self.context['config'] = PrettyDocsConfigModel.find_or_create_by_name(self.namespace)
+        self.check_field_config(self.context['config'], self.Scaffold)
         return scaffold.list(self)
 
     @route
     def admin_add(self):
-        self.context["config"] = PrettyDocsConfigModel.find_or_create_by_name(self.namespace)
-        self.check_field_config(self.context["config"], self.Scaffold)
+        self.context['config'] = PrettyDocsConfigModel.find_or_create_by_name(self.namespace)
+        self.check_field_config(self.context['config'], self.Scaffold)
         return scaffold.add(self)
 
     @route
     def admin_edit(self, key):
-        self.context["config"] = PrettyDocsConfigModel.find_or_create_by_name(self.namespace)
-        self.check_field_config(self.context["config"], self.Scaffold)
+        self.context['config'] = PrettyDocsConfigModel.find_or_create_by_name(self.namespace)
+        self.check_field_config(self.context['config'], self.Scaffold)
         return scaffold.edit(self, key)
 
     @staticmethod
     def check_field_config(config, scaffold, *args, **kwargs):
         if config.custom_url_name is False:
-            if "name" in scaffold.display_properties_in_list:
-                scaffold.display_properties_in_list.remove("name")
-            if hasattr(scaffold, "display_properties") and "name" in scaffold.display_properties:
-                scaffold.display_properties.remove("name")
-            scaffold.hidden_properties_in_edit.append("name")
+            if 'name' in scaffold.display_properties_in_list:
+                scaffold.display_properties_in_list.remove('name')
+            if hasattr(scaffold, 'display_properties') and 'name' in scaffold.display_properties:
+                scaffold.display_properties.remove('name')
+            scaffold.hidden_properties_in_edit.append('name')
 
     @route
     def admin_change_parent(self):
-        parent = self.params.get_ndb_record("parent")
-        target = self.params.get_ndb_record("target")
+        parent = self.params.get_ndb_record('parent')
+        target = self.params.get_ndb_record('target')
         if parent is not None:
             if parent.key != target.key:
                 target.category = parent.key
@@ -79,16 +79,16 @@ class PrettyDocs(Controller):
         target.must_update_timestamp = time.time()
         target.put()
 
-        self.meta.change_view("json")
-        self.context["data"] = {
-            "move": "done"
+        self.meta.change_view('json')
+        self.context['data'] = {
+            'move': 'done'
         }
 
     @route
     def admin_change_sort(self):
-        sort = self.params.get_ndb_record("sort")
-        sort_before = self.params.get_ndb_record("sort_before")
-        target = self.params.get_ndb_record("target")
+        sort = self.params.get_ndb_record('sort')
+        sort_before = self.params.get_ndb_record('sort_before')
+        target = self.params.get_ndb_record('target')
         s = [target.sort]
         if sort is not None:
             s.append(sort.sort)
@@ -119,7 +119,7 @@ class PrettyDocs(Controller):
             sort_before.sort = s[2]
             sort_before.put_async()
 
-        self.meta.change_view("json")
-        self.context["data"] = {
-            "sort": "done"
+        self.meta.change_view('json')
+        self.context['data'] = {
+            'sort': 'done'
         }
