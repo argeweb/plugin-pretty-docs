@@ -53,8 +53,3 @@ class PrettyDocsModel(BasicModel):
             return cls.query(cls.category == None, cls.is_enable == True).order(-cls.sort)
         else:
             return cls.query(cls.category == category_key, cls.is_enable == True).order(-cls.sort)
-
-    def before_put(self):
-        super(PrettyDocsModel, self).before_put()
-        if self.name is None or self.name is u'':
-            self.name = str(int(time.time()))
