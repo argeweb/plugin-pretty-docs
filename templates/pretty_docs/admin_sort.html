@@ -206,7 +206,7 @@
                     updateTarget["update"] = Date.now();
                     $(sendP).text((i+1) + " / " + length);
                     setTimeout(page.saveChangeList, 80);
-                })
+                });
             }else{
                 page.initList = $(page.treeId).sortableListsToArray();
                 page.compare();
@@ -290,6 +290,9 @@
             $(".update-button").click(page.saveChangeList);
             page.initList = $(page.treeId).sortableListsToArray();
         };
+        page["change_view_to_edit"] = reload;
+        page["change_view_to_view"] = reload;
+        page["change_view_to_delete"] = reload;
         page.init();
     })(page);
 </script>

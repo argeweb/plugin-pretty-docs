@@ -13,8 +13,8 @@ from models.pretty_docs_model import PrettyDocsModel, get_page as get_pretty_doc
 __all__ = (
     'get_pretty_docs_page'
 )
-datastore.register('pretty_docs', PrettyDocsModel.all_enable)
-datastore.register('product_category_find', PrettyDocsModel.find_by_properties)
+datastore.register('pretty_docs_list', PrettyDocsModel.all_enable)
+datastore.register('pretty_docs', PrettyDocsModel.find_by_properties)
 
 plugins_helper = {
     'title': u'說明文件',

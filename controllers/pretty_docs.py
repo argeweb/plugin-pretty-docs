@@ -41,8 +41,13 @@ class PrettyDocs(Controller):
 
     @route_menu(list_name=u'backend', text=u'說明文件', sort=331, group=u'內容管理', need_hr=True)
     def admin_list(self):
+        page_view = self.params.get_header('page_view')
         self.context['config'] = PrettyDocsConfigModel.find_or_create_by_name(self.namespace)
         self.check_field_config(self.context['config'], self.Scaffold)
+        if page_view == u'sort':
+            self.meta.view.template_name = '/pretty_docs/admin_sort.html'
+        else:
+            self.context['change_view_to_sort_function'] = 'reload'
         return scaffold.list(self)
 
     @route

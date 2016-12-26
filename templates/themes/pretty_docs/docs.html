@@ -52,7 +52,7 @@
                         <div class="content-inner">
                             {% if editable or page.content -%}
                             <section id="{{ page.name }}" class="doc-section">
-                                <div class="section-block content-editable" data-key="{{ print_key(page) }}" data-field="content">{{ page.content }}</div>
+                                <div class="section-block content-editable" data-key="{{ print_key(page) }}" data-field="content">{% if page.content %}{{ page.content }}{% endif %}</div>
                             </section>
                             {%- endif %}
                             {% for item in list %}
