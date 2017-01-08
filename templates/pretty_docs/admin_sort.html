@@ -204,7 +204,7 @@
                 var path = is_move ? "change_parent" : "change_sort";
                 var sendP = is_move ? "#sendP1" : "#sendP2";
                 var length = is_move ? page.mustChangeParentList.length : page.mustChangePositionList.length;
-                json("/admin/pretty_docs/" + path, updateTarget, function(data){
+                json("/admin/pretty_docs/pretty_docs/" + path, updateTarget, function(data){
                     updateTarget["update"] = Date.now();
                     $(sendP).text((i+1) + " / " + length);
                     setTimeout(page.saveChangeList, 80);

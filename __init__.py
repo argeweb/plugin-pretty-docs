@@ -6,15 +6,15 @@
 # Web: http://www.yooliang.com/
 # Date: 2016/07/08.
 
-from argeweb import datastore
+from argeweb import ViewDatastore
 from models.pretty_docs_model import PrettyDocsModel, get_page as get_pretty_docs_page
 
 
 __all__ = (
     'get_pretty_docs_page'
 )
-datastore.register('pretty_docs_list', PrettyDocsModel.all_enable)
-datastore.register('pretty_docs', PrettyDocsModel.find_by_properties)
+ViewDatastore.register('pretty_docs_list', PrettyDocsModel.all_enable)
+ViewDatastore.register('pretty_docs', PrettyDocsModel.find_by_properties)
 
 plugins_helper = {
     'title': u'說明文件',
