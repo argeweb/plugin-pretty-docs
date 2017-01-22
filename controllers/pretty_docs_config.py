@@ -21,6 +21,7 @@ class PrettyDocsConfig(Controller):
         hidden_properties_in_edit = ('name',)
 
     @route
+    @route_menu(list_name=u'backend', text=u'說明文件設定', sort=9981, group=u'系統設定')
     def admin_config(self):
         record = self.meta.Model.find_by_name(self.namespace)
         if record is None:
