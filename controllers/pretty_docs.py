@@ -24,9 +24,9 @@ class PrettyDocs(Controller):
         pagination_limit = 1000
 
     class Scaffold:
-        display_properties_in_list = ['name', 'title', 'title_lang_zhtw', 'is_enable', 'category']
-        hidden_properties_in_edit = []
-        excluded_properties_in_from = ()
+        display_in_list = ['name', 'title', 'title_lang_zhtw', 'is_enable', 'category']
+        hidden_in_form = []
+        excluded_in_form = ()
 
     @add_authorizations(auth.check_user)
     @route_with(template="/docs/<:(.*)>")
@@ -65,11 +65,11 @@ class PrettyDocs(Controller):
     @staticmethod
     def check_field_config(config, scaffold, *args, **kwargs):
         if config.custom_url_name is False:
-            if 'name' in scaffold.display_properties_in_list:
-                scaffold.display_properties_in_list.remove('name')
-            if hasattr(scaffold, 'display_properties') and 'name' in scaffold.display_properties:
-                scaffold.display_properties.remove('name')
-            scaffold.hidden_properties_in_edit.append('name')
+            if 'name' in scaffold.display_in_list:
+                scaffold.display_in_list.remove('name')
+            if hasattr(scaffold, 'display_in_form') and 'name' in scaffold.display_in_form:
+                scaffold.display_in_form.remove('name')
+            scaffold.hidden_in_form.append('name')
 
     @route
     def admin_change_parent(self):
