@@ -31,7 +31,7 @@ def get_page(namespace, page_name):
 
 
 class PrettyDocsModel(BasicModel):
-    name = Fields.StringProperty(verbose_name=u'識別名稱(網址)')
+    name = Fields.StringProperty(verbose_name=u'系統編號')
     title = Fields.StringProperty(verbose_name=u'文件名稱')
     intro = Fields.StringProperty(verbose_name=u'文件簡介')
     icon = Fields.StringProperty(verbose_name=u'圖示名稱')
