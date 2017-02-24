@@ -46,6 +46,9 @@ class PrettyDocs(Controller):
         self.check_field_config(self.context['config'], self.Scaffold)
         if page_view == u'sort':
             self.meta.view.template_name = '/pretty_docs/admin_sort.html'
+            self.context['change_view_to_edit_function'] = 'reload'
+            self.context['change_view_to_view_function'] = 'reload'
+            self.context['change_view_to_delete_function'] = 'reload'
         else:
             self.context['change_view_to_sort_function'] = 'reload'
         return scaffold.list(self)

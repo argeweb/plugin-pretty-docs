@@ -4,12 +4,12 @@
 <div class="ibox-content m-b-sm border-bottom">
     <div class="p-xs">
         <div class="pull-left m-r-md">
-            <i class="fa fa-user text-navy mid-icon"></i>
+            <i class="material-icons mid-icon brand-text-color">subject</i>
         </div>
         <h2>說明文件</h2>
         <span>透過拖曳來變更分類的順序與其所屬的分類
             {%- if uri_exists_with_permission(prefix="admin", controller="pretty_docs_config", action="config") %}，<a href="{{ uri('admin:pretty_docs:pretty_docs_config:config') }}" target="aside_iframe">項目設定</a>{% endif -%}。</span>
-        {% if last_record_date %}<span class="text-muted small pull-right visible-sm visible-md visible-lg">最後更新：<i class="fa fa-clock-o"></i> {{ print_value(last_record_date) }}</span>{% endif %}
+        {% if last_record_date %}<span class="text-muted small pull-right visible-sm visible-md visible-lg">最後更新：<i class="icon">access_time</i> {{ print_value(last_record_date) }}</span>{% endif %}
     </div>
 </div>
 <script src="/static/vendor/jquery-sortable-lists/jquery-sortable-lists.min.js"></script>
@@ -68,7 +68,7 @@
 </div>
 {% endblock %}
 
-{% block page_scripts %}
+{% block layout_scripts %}
 <script type="text/javascript">
     (function(page){
         page.maxLevel = parseInt('{{ config.category_depth }}');
@@ -291,9 +291,6 @@
             $(".update-button").click(page.saveChangeList);
             page.initList = $(page.treeId).sortableListsToArray();
         };
-        page["change_view_to_edit"] = reload;
-        page["change_view_to_view"] = reload;
-        page["change_view_to_delete"] = reload;
         page.init();
     })(page);
 </script>
