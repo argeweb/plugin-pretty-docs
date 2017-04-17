@@ -20,12 +20,3 @@ class PrettyDocsConfigModel(BasicModel):
     index_content = Fields.RichTextProperty(default=u'', verbose_name=u'首頁內容')
     footer_content = Fields.RichTextProperty(default=u'', verbose_name=u'頁尾內容')
     social_container = Fields.RichTextProperty(default=u'', verbose_name=u'社群分享區塊')
-
-    @classmethod
-    def find_or_create_by_name(cls, name):
-        item = cls.find_by_name(name)
-        if item is None:
-            item = cls()
-            item.name = name
-            item.put()
-        return item

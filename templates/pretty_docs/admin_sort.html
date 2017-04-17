@@ -8,7 +8,7 @@
         </div>
         <h2>說明文件</h2>
         <span>透過拖曳來變更分類的順序與其所屬的分類
-            {%- if uri_exists_with_permission(prefix="admin", controller="pretty_docs_config", action="config") %}，<a href="{{ uri('admin:pretty_docs:pretty_docs_config:config') }}" target="aside_iframe">項目設定</a>{% endif -%}。</span>
+            {%- if uri_exists_with_permission(prefix="admin", controller="pretty_docs_config", action="config") %}，<a href="{{ uri('admin:pretty_docs:pretty_docs_config:config') }}" target="aside_area">項目設定</a>{% endif -%}。</span>
         {% if last_record_date %}<span class="text-muted small pull-right visible-sm visible-md visible-lg">最後更新：<i class="icon">access_time</i> {{ print_value(last_record_date) }}</span>{% endif %}
     </div>
 </div>
@@ -212,7 +212,7 @@
                 page.initList = $(page.treeId).sortableListsToArray();
                 page.compare();
                 $(".update-button").prop("disabled", false);
-                backend.message.quick_show("更新完成", 1800);
+                message.alert("更新完成", 1800);
             }
         };
         page.compare = function(){
