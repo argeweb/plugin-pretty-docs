@@ -28,6 +28,7 @@ plugins_helper = {
                 {'action': 'edit', 'name': u'編輯文件'},
                 {'action': 'view', 'name': u'檢視文件'},
                 {'action': 'delete', 'name': u'刪除文件'},
+                {'action': 'plugins_check', 'name': u'啟用停用模組'},
             ]
         },
         'pretty_docs_config': {

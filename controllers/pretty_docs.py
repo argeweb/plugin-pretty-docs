@@ -83,7 +83,6 @@ class PrettyDocs(Controller):
                 target.category = parent.key
         else:
             target.category = None
-        target.must_update_product = True
         target.must_update_timestamp = time.time()
         target.put()
 
