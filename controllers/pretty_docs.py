@@ -20,7 +20,6 @@ import random
 
 class PrettyDocs(Controller):
     class Meta:
-        components = (scaffold.Scaffolding, Pagination, Search)
         pagination_limit = 1000
 
     class Scaffold:
