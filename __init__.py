@@ -31,7 +31,7 @@ plugins_helper = {
                 {'action': 'plugins_check', 'name': u'啟用停用模組'},
             ]
         },
-        'pretty_docs_config': {
+        'config': {
             'group': u'說明文件設定',
             'actions': [
                 {'action': 'config', 'name': u'說明文件相關設定'},

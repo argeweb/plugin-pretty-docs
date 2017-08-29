@@ -10,18 +10,18 @@ import time
 from argeweb import BasicModel
 from argeweb import Fields
 from pretty_docs_self_referential_model import PrettyDocsModel as Category
-from pretty_docs_config_model import PrettyDocsConfigModel
+from .config_model import ConfigModel
 
 
-def get_page(namespace, page_name):
-    config = PrettyDocsConfigModel.find_or_create_by_name(namespace)
+def get_page(page_name):
+    config = ConfigModel.get_or_create_by_name('pretty_docs_config')
     if page_name == 'index':
         template_name = u'/index.html'
         page = None
         page_list = PrettyDocsModel.all_enable()
     else:
         template_name = u'/docs.html'
-        page = PrettyDocsModel.find_by_name(page_name)
+        page = PrettyDocsModel.get_by_name(page_name)
         if page is not None:
             page.modified_time = str(page.modified).split('.')[0]
         page_list = PrettyDocsModel.all_enable(category=page_name)
@@ -38,7 +38,7 @@ class PrettyDocsModel(BasicModel):
     page_color = Fields.StringProperty(default=u'', verbose_name=u'文件顏色',
                                        choices=(u'', u'green', u'blue', u'orange', u'red', u'pink', u'purple'))
     category = Fields.CategoryProperty(kind=Category, verbose_name=u'上層文件')
-    is_enable = Fields.BooleanProperty(default=True, verbose_name=u'顯示於前台')
+    is_enable = Fields.BooleanProperty(verbose_name=u'顯示於前台', default=True)
     content = Fields.RichTextProperty(verbose_name=u'文件內容')
     footer_content = Fields.RichTextProperty(verbose_name=u'頁尾內容')
 
@@ -46,7 +46,7 @@ class PrettyDocsModel(BasicModel):
     def all_enable(cls, category=None, category_key=None, *args, **kwargs):
         cat = None
         if category and category_key is None:
-            cat = cls.find_by_name(category)
+            cat = cls.get_by_name(category)
             if cat is not None:
                 category_key = cat.key
         if category_key is None:

@@ -1,19 +1,22 @@
 {% extends "backend/list_layout.html" %}
-{% block layout_header %}{% endblock %}
-{% block layout_content %}
-<div class="ibox-content m-b-sm border-bottom">
+{% block page_big_header %}
+<script src="/static/vendor/jquery-sortable-lists/jquery-sortable-lists.min.js"></script>
+<div class="ibox-content m-b-sm border-bottom page-big-header">
     <div class="p-xs">
         <div class="pull-left m-r-md">
             <i class="material-icons mid-icon brand-text-color">subject</i>
         </div>
         <h2>說明文件</h2>
         <span>透過拖曳來變更分類的順序與其所屬的分類
-            {%- if uri_exists_with_permission(prefix="admin", controller="pretty_docs_config", action="config") %}，<a href="{{ uri('admin:pretty_docs:pretty_docs_config:config') }}" target="aside_area">項目設定</a>{% endif -%}。</span>
+            {%- if uri_permission(prefix="admin", controller="pretty_docs_config", action="config") %}，<a href="{{ uri('admin:pretty_docs:pretty_docs_config:config') }}" target="aside_area">項目設定</a>{% endif -%}。</span>
         {% if last_record_date %}<span class="text-muted small pull-right visible-sm visible-md visible-lg">最後更新：<i class="icon">access_time</i> {{ print_value(last_record_date) }}</span>{% endif %}
     </div>
 </div>
-<script src="/static/vendor/jquery-sortable-lists/jquery-sortable-lists.min.js"></script>
-<div class="wrapper wrapper-content">
+{% endblock %}
+
+{% block page_header %}{% endblock %}
+
+{% block page_content %}
     <div class="row">
         <div class="col-sm-7">
             <div class="ibox float-e-margins">
@@ -30,9 +33,9 @@
                     data-sort="{{ item.sort }}"
                     data-parent="{% if item.category %}{{ print_key(item.category) }}{% endif %}">{{ print_text(item.title) }}
                     <span style="min-height: 50px;">
-                        {% if uri_exists_with_permission(action='edit')%}<a href="{{ uri_action_link('delete', item) }}" class="btn btn-flat float-right btn-sm"><i class="fa fa-shield"></i> 刪除 </a>{% endif %}
-                        {% if uri_exists_with_permission(action='edit')%}<a href="{{ uri_action_link('edit', item) }}" class="btn btn-flat float-right btn-sm"><i class="fa fa-shield"></i> 編輯 </a>{% endif %}
-                        {% if uri_exists_with_permission(action='edit')%}<a href="{{ uri_action_link('view', item) }}" class="btn btn-flat float-right btn-sm"><i class="fa fa-shield"></i> 檢視 </a>{% endif %}
+                        {% if uri_permission(action='edit')%}<a href="{{ uri_action_link('delete', item) }}" class="btn btn-flat float-right btn-sm"><i class="fa fa-shield"></i> 刪除 </a>{% endif %}
+                        {% if uri_permission(action='edit')%}<a href="{{ uri_action_link('edit', item) }}" class="btn btn-flat float-right btn-sm"><i class="fa fa-shield"></i> 編輯 </a>{% endif %}
+                        {% if uri_permission(action='edit')%}<a href="{{ uri_action_link('view', item) }}" class="btn btn-flat float-right btn-sm"><i class="fa fa-shield"></i> 檢視 </a>{% endif %}
                     </span>
                 </li>
                 {% endfor %}
@@ -65,10 +68,9 @@
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
-{% block layout_scripts %}
+{% block page_scripts %}
 <script type="text/javascript">
     (function(page){
         page.maxLevel = parseInt('{{ config.category_depth }}');
@@ -296,9 +298,9 @@
 </script>
 {% endblock %}
 
-{% block layout_buttons %}
+{% block page_fly_button %}
     {%- if scaffolding %}
-        {% if uri_exists_with_permission(action="add") -%}
+        {% if uri_permission(action="add") -%}
             <a href="{{ uri_action_link('add') }}" class="fbtn fbtn-lg fbtn-brand-accent waves-attach waves-circle waves-light"><span class="fbtn-text fbtn-text-left">{{ s.scaffold_title("add") }}</span><span class="icon icon-lg">edit</span></a>
         {%- endif -%}
     {%- endif %}

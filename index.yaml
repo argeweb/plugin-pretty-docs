@@ -1,0 +1,11 @@
+- kind: PrettyDocsModel
+  properties:
+  - name: category
+  - name: is_enable
+  - name: sort
+    direction: desc
+
+- kind: PrettyDocsModel
+  properties:
+  - name: must_update_product
+  - name: update_timestamp

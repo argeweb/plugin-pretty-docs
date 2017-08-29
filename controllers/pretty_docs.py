@@ -6,42 +6,33 @@
 # Web: http://www.yooliang.com/
 # Date: 2015/7/12.
 
-from google.appengine.ext import ndb
-from google.appengine.datastore.datastore_query import Cursor
 from argeweb import auth, add_authorizations
 from argeweb import Controller, scaffold, route_menu, Fields, route_with, route
-from argeweb.components.pagination import Pagination
-from argeweb.components.search import Search
 from ..models.pretty_docs_model import get_page
-from ..models.pretty_docs_config_model import PrettyDocsConfigModel
+from ..models.config_model import ConfigModel
 import time
-import random
 
 
 class PrettyDocs(Controller):
-    class Meta:
-        pagination_limit = 1000
-
     class Scaffold:
         display_in_list = ['name', 'title', 'title_lang_zhtw', 'is_enable', 'category']
-        hidden_in_form = []
-        excluded_in_form = ()
 
     @add_authorizations(auth.check_user)
     @route_with(template="/docs/<:(.*)>")
     @route_with(template="/docs/<:(.*)>.html")
     def doc_path(self, path):
+        self.meta.pagination_limit = 1000
         self.context['config'], self.context['page'], self.context['list'], self.meta.view.template_name = \
-            get_page(self.namespace, path)
+            get_page(path)
         self.meta.view.theme = self.context['config'].theme
         self.context['path'] = u'/docs/' + path
         if self.application_user and self.application_user_level >= 999:
             self.context['editable'] = self.params.get_boolean('edit')
 
-    @route_menu(list_name=u'backend', text=u'說明文件', sort=331, group=u'內容管理', need_hr=True)
+    @route_menu(list_name=u'backend', group=u'內容管理', need_hr=True, text=u'說明文件', sort=331)
     def admin_list(self):
         page_view = self.params.get_header('page_view')
-        self.context['config'] = PrettyDocsConfigModel.find_or_create_by_name(self.namespace)
+        self.context['config'] = ConfigModel.get_or_create_by_name('pretty_docs_config')
         self.check_field_config(self.context['config'], self.Scaffold)
         if page_view == u'sort':
             self.meta.view.template_name = '/pretty_docs/admin_sort.html'
@@ -54,13 +45,13 @@ class PrettyDocs(Controller):
 
     @route
     def admin_add(self):
-        self.context['config'] = PrettyDocsConfigModel.find_or_create_by_name(self.namespace)
+        self.context['config'] = ConfigModel.get_or_create_by_name('pretty_docs_config')
         self.check_field_config(self.context['config'], self.Scaffold)
         return scaffold.add(self)
 
     @route
     def admin_edit(self, key):
-        self.context['config'] = PrettyDocsConfigModel.find_or_create_by_name(self.namespace)
+        self.context['config'] = ConfigModel.get_or_create_by_name('pretty_docs_config')
         self.check_field_config(self.context['config'], self.Scaffold)
         return scaffold.edit(self, key)
 
